@@ -8,7 +8,11 @@ import pandas as pd
 class Client:
     def __init__(self, client):
         self.client = client
-
+    ''' Normaliza el archivo .csv de clientes en los cuales
+        Capitaliza los nombres apellidos
+        Valida el email
+        Valida un formato estandar de telefonia
+    '''
     def normalization(self):
         try:
             self._capitalize(columns=['Nombre','Apellido'])
@@ -73,6 +77,7 @@ class Client:
         else:
             raise ValueError(f"Las columna '{column}' no se ha encontrado.")
 
+    ''' Realiza un insert del archivo .csb normailizado a la tabla de cliente'''
     def addClients(self):
         db_connection = ConnectDb(dbPath='../TechnicalTestPy/SQL/sql.db')  # Instancia de la clase ConnectDb
         conn = db_connection.connect_sqlite()  # Obtener la conexión a la base de datos
@@ -89,6 +94,7 @@ class Client:
             finally:
                 db_connection.close_connection(conn)
 
+    ''' Selecciona los clientes de la base de datos'''
     def getClients(self):
         db_connection = ConnectDb(dbPath='../TechnicalTestPy/SQL/sql.db')  # Instancia de la clase ConnectDb
         conn = db_connection.connect_sqlite()  # Obtener la conexión a la base de datos
@@ -106,6 +112,7 @@ class Client:
         finally:
             db_connection.close_connection(conn)
 
+    ''' Cuenta los clientes por año segun la columna fechaRegistro en una vista de base de datos previamente creada.'''
     def getClientsbyYear(self=None):
         db_connection = ConnectDb(dbPath='../TechnicalTestPy/SQL/sql.db')
         conn = db_connection.connect_sqlite()
@@ -129,6 +136,7 @@ class Client:
         finally:
             db_connection.close_connection(conn)
 
+    ''' Busca clientes por correo electronico'''
     def getClientsbyEmail(self, email):
         db_connection = ConnectDb(dbPath='../TechnicalTestPy/SQL/sql.db')  # Instancia de la clase ConnectDb
         conn = db_connection.connect_sqlite()  # Obtener la conexión a la base de datos
@@ -146,6 +154,7 @@ class Client:
         finally:
             db_connection.close_connection(conn)
 
+    ''' Crea clientes por una entrada JSON del cliente'''
     def createClient(newClient):
         db_connection = ConnectDb(dbPath='../TechnicalTestPy/SQL/sql.db')  # Instancia de la clase ConnectDb
         conn = db_connection.connect_sqlite()  # Obtener la conexión a la base de datos

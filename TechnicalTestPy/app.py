@@ -8,16 +8,18 @@ from Controllers.rpa.scrap_page import Scrapping_Page
 import re
 
 app = Flask(__name__)
-
+'''Carga el cliente normalizado'''
 def load_client_data(file_path="../output/clientes_normalizados.csv", file_type=".csv"):
     extractorClient = ExtractData(file_path, file_type)
     dataClient = extractorClient.readFile()
     return Client(dataClient)
 
+'''Guarda el archivo .csv del cliente'''
 def saveFile(file_path, file_type,response):
     extractorClient = ExtractData(file_path, file_type)
     extractorClient.save_to_csv(response)
 
+'''Valida el archivo json cuando se quiere crear un cliente'''
 def validate_client_data(client_data):
     """Valida los datos de un nuevo cliente"""
     required_fields = ['nombre', 'apellido', 'email', 'teléfono', 'fechaRegistro']
@@ -39,6 +41,7 @@ def validate_client_data(client_data):
 
     return True, None
 
+'''Realiza la petición para normalizar el archivo .csv y guardarlo'''
 @app.route(rule="/client/normalization",methods=['GET'])
 def client_normalization():
     client = load_client_data(file_path="../input/clientes.csv", file_type=".csv")
@@ -49,7 +52,7 @@ def client_normalization():
     else:
         print(error)
         return "<p>Información del cliente no normalizada</p>"
-
+'''Inicia el proceso de anexar los clientes normalizados a la tabla de clientes'''
 @app.route(rule="/client/insert",methods=['GET'])
 def insert_client():
     client = load_client_data(file_path="../output/clientes_normalizados.csv", file_type=".csv")
@@ -60,6 +63,7 @@ def insert_client():
         print(error)
         return "<p>Información del cliente no insertada</p>"
 
+'''Consulta y devuelve los clientes por año y los muestra en un template HMTL como impreso'''
 @app.route(rule="/client/year",methods=['GET'])
 def get_clientsByYear():
     getClients = Client.getClientsbyYear()
@@ -70,6 +74,7 @@ def get_clientsByYear():
     else:
         return "<p>No se encuentran clientes cargados por años</p>"
 
+'''Consulta y devuelve los clientes y los muestra en un template HMTL como impreso'''
 @app.route(rule='/clientes', methods=['GET'])
 def get_clients():
     client = load_client_data(file_path="../output/clientes_normalizados.csv", file_type=".csv")
@@ -81,6 +86,7 @@ def get_clients():
     else:
         return "<p>No se encuentran clientes cargados</p>"
 
+'''Recibe un JSON como cliente y lo sube a la base de datos'''
 @app.route(rule='/clientes', methods=['POST'])
 def post_clients():
     if not request.is_json:
@@ -99,6 +105,7 @@ def post_clients():
     else:
         return jsonify({"error": f"Error en la carga del cliente: {response}"}), 500
 
+'''Filtra el cliente por correo electronico'''
 @app.route(rule="/clientes/<email>",methods=['GET'])
 def clientsByEmail(email):
     client = load_client_data(file_path="../output/clientes_normalizados.csv", file_type=".csv")
@@ -110,6 +117,7 @@ def clientsByEmail(email):
     else:
         return "<p>No se encontraron clientes con ese criterio de búsqueda.</p>"
 
+'''Accede a la pagina web y retorna la pagina'''
 @app.route(rule="/rpa/httpbin.org",methods=['GET'])
 def scrappingRPA():
     url = "https://httpbin.org"
@@ -121,6 +129,8 @@ def scrappingRPA():
         return page.parserHTML()
     else:
         return "Error al acceder a la página.", 400
+
+'''Accede a la pagina web y retorna el titulo de la pagina web'''
 @app.route(rule="/rpa/httpbin.org/title", methods=['GET'])
 def scrappingRPATitle():
     url = "https://httpbin.org"
@@ -132,7 +142,6 @@ def scrappingRPATitle():
         return page.extractTitle()
     else:
         return "Error al acceder a la página.", 400
-
 
 if __name__ == '__main__':
     app.run(debug=True)

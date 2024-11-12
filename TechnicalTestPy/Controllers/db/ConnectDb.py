@@ -3,7 +3,7 @@ import sqlite3
 class ConnectDb:
     def __init__(self, dbPath):
         self.dbPath = dbPath
-
+    '''Conectaa el archivo .db sql para realizar las consultas'''
     def connect_sqlite(self):
         try:
             # Conectar a la base de datos SQLite (si no existe, la crea)

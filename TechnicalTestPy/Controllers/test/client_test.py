@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 from TechnicalTestPy.Controllers.client.Client import Client  # Asegúrate de importar correctamente tu clase Cliente
 
+'''Prueba unitaria a la capitalización del archivo de clientes'''
 
 # Fixture para crear un DataFrame de ejemplo
 @pytest.fixture
